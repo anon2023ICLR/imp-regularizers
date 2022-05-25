@@ -19,17 +19,19 @@ All the regularization experiments are run via `train.py` through the following:
 * `UnitJacLoss` - Large-batch SGD + Unit Jacobian regularization
 ​
 All hyperparameters are set via the `--learning-rate, --micro-batch-size, --batch-size` and `--exter-lambda` (which controls the regularization strength) arguments. In order to recreate the experiments, the optimal learning rate (η) and lambda values (λ) are listed in the table below:
-​
+
+
 | Model/Dataset      | SB SGD | LB SGD | LB + GN       | LB + FT       | LB + AJ        | LB + UJ        |
 |--------------------|--------|--------|---------------|---------------|----------------|----------------|
 | ResNet-18/CIFAR10  | η=0.1  | η=0.1  | η=0.1, λ=0.01 | η=0.1, λ=0.01 | η=0.1, λ=0.001 | η=0.1, λ=0.001 |
 | ResNet-18/CIFAR100 | η=0.1  | η=0.5  | η=0.1, λ=0.01 | η=0.1, λ=0.01 | η=0.1, λ=5e-5  | η=0.1, λ=0.001 |
-| VGG-11/CIFAR10      | η=0.15 | η=0.01 | η=0.01, λ=0.5 | η=0.01, λ=0.5 | η=0.01, λ=2e-5 | N/A            |
-​
+| VGG-11/CIFAR10     | η=0.15 | η=0.01 | η=0.01, λ=0.5 | η=0.01, λ=0.5 | η=0.01, λ=2e-5 | N/A            |
+
+
 For example, running the following command trains a Resnet-18 on CIFAR-10 with average micro-batch gradient norm regularization (where batch size is 5120, learning rate is 0.1, regularization penalty is 0.01, and micro-batch size is 128)
 ​
 ```setup
-python train.py --model='resnet' --dataset='cifar10' --large-batch-size=5120 --learning-rate=0.1 --exter-lambda=0.01 --batch_size=128 --test='RegLoss'
+python train.py --model='resnet' --dataset='cifar10' --batch-size=5120 --learning-rate=0.1 --exter-lambda=0.01 --micro-batch_size=128 --test='RegLoss'
 ```
 ​
 ## Evaluation
@@ -38,7 +40,7 @@ After training is complete, the model can be evaluated using `eval.py`. As long 
 Building off of our Resnet-18 example earlier, we can run the following command to obtain the final test accuracy:
 ​
 ```setup
-python eval.py --model='resnet' --dataset='cifar10' --large-batch-size=5120 --lr=0.1 --exter-lambda=0.01 --batch_size=128 --test='RegLoss' --path='saved_models/run_name/checkpoint_best.pth'
+python eval.py --model='resnet' --dataset='cifar10' --batch-size=5120 --lr=0.1 --exter-lambda=0.01 --micro-batch_size=128 --test='RegLoss' --path='saved_models/run_name/checkpoint_best.pth'
 ```
 ​
 ## Results
