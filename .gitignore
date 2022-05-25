@@ -10,3 +10,4 @@ out*/*
 src/supervised
 src/~
 src/*.png
+src/saved_models

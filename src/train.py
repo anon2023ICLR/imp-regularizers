@@ -43,7 +43,7 @@ parser.add_argument('--train-dataset-size', type=int, default=40000)
 parser.add_argument('--test-dataset-size', type=int, default=10000)
 parser.add_argument('--real-test-dataset-size', type=int, default=10000)
 parser.add_argument('--batch-size', type=int, default=5120)
-parser.add_argument('--save-step', type=int, default=25000)
+parser.add_argument('--save-step', type=int, default=0)
 parser.add_argument('--exter-run', type=str, default='Vanilla|0.1|128-1')
 parser.add_argument('--exter-lambda', type=float, default=1.)
 

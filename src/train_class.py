@@ -405,8 +405,10 @@ class SGDTrainer:
                 correct += predicted.eq(targets).sum().item()
 
             avg_test_loss = avg_test_loss / len(self.real_test_dataset)
-            wandb.log({"test/final_avg_test_loss": avg_test_loss})
-            wandb.log({"test/final_test_accuracy": 100.*correct/total})
+            # wandb.log({"test/final_avg_test_loss": avg_test_loss})
+            # wandb.log({"test/final_test_accuracy": 100.*correct/total})
+        print("Test Loss:", avg_test_loss)
+        print("Test Accuracy:", 100.*correct/total)
         return 100.*correct/total
 
 
