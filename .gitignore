@@ -3,16 +3,10 @@
 *results*
 *.vscode*
 src/data/*
-src/plot_outputs/*
 *.ipynb_checkpoints*
 */data/*
 *wandb*
-src/log_lstm
-src/log_lstm_big
 out*/*
-train_test_script.py
-dummyscript.py
 src/supervised
 src/~
 src/*.png
-*norms.csv
