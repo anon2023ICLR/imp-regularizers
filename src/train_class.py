@@ -26,7 +26,7 @@ parser = argparse.ArgumentParser(description='Arguments for Training Vanilla SGD
 parser.add_argument('--num-workers', type=int, default=1)
 parser.add_argument('--no-logging', action='store_false', default=True)
 parser.add_argument('--logging-period', type=int, default=20)
-parser.add_argument('--test-name', default='Test')
+parser.add_argument('--test-name', default='0')
 parser.add_argument('--test', default='Vanilla')
 parser.add_argument('--seed', type=int, default=12)
 parser.add_argument('--checkpoint', type=str, default="0")
@@ -36,12 +36,12 @@ parser.add_argument('--scale', type=str, default="0.0001")
 parser.add_argument('--log-steps', type=str, default="1000,2000,3000,4000,5000")
 parser.add_argument('--run-name', type=str, default="0")
 parser.add_argument('--learning-rate', type=float, default=0.1)
-parser.add_argument('--batch-size', type=int, default=128)
+parser.add_argument('--micro-batch-size', type=int, default=128)
 parser.add_argument('--test-batch-size', type=int, default=128)
 parser.add_argument('--train-dataset-size', type=int, default=40000)
 parser.add_argument('--test-dataset-size', type=int, default=10000)
 parser.add_argument('--real-test-dataset-size', type=int, default=10000)
-parser.add_argument('--large-batch-size', type=int, default=5120)
+parser.add_argument('--batch-size', type=int, default=5120)
 parser.add_argument('--save-step', type=int, default=25000)
 parser.add_argument('--exter-run', type=str, default='Vanilla|0.1|128-1')
 parser.add_argument('--exter-lambda', type=float, default=1.)
@@ -56,8 +56,8 @@ class SGDTrainer:
         self.num_workers = self.args.num_workers
         self.passed = True
         self.lr = self.args.learning_rate
-        self.batch_size = self.args.batch_size
-        self.secondary_batch_size = self.args.large_batch_size
+        self.batch_size = self.args.micro_batch_size
+        self.secondary_batch_size = self.args.batch_size
         self.train_dataset_size = self.args.train_dataset_size
         if self.args.save_step > self.args.log_steps[-1]:
             self.args.save_step = self.args.log_steps[-1] // 2
@@ -71,7 +71,10 @@ class SGDTrainer:
             raise ValueError(f"Invalid test type: {self.test_type}")
         self.test_batch_size = self.args.test_batch_size
         self.logging = self.args.no_logging
-        self.project_name = self.args.test_name + self.args.model.upper() + self.args.dataset
+        if self.args.test_name == '0':
+            self.project_name = self.args.model.upper() + self.args.dataset
+        else:
+            self.project_name = self.args.test_name + self.args.model.upper() + self.args.dataset
         print(bcolors.c_cyan(self.project_name))
         if self.logging:
             self.run = wandb.init(
@@ -84,13 +87,13 @@ class SGDTrainer:
             if self.args.run_name == "0":
                 if self.test_type == 'Vanilla':
                     idx = wandb.run.name.split("-")[-1]
-                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.args.batch_size}-{idx}"
+                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.batch_size}-{idx}"
                 elif self.test_type == 'PseudoGD':
                     idx = wandb.run.name.split("-")[-1]
-                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.args.batch_size}|{self.args.large_batch_size}|-{idx}"
+                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.batch_size}|{self.secondary_batch_size}-{idx}"
                 elif self.test_type in ['RegLoss', 'UnitJacLoss', 'FishLoss', 'AvgJacLoss']:
                     idx = wandb.run.name.split("-")[-1]
-                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.args.batch_size}|{self.args.large_batch_size}|{self.args.exter_lambda}-{idx}"
+                    wandb.run.name = f"{self.test_type}|{self.args.learning_rate}|{self.batch_size}|{self.secondary_batch_size}|{self.args.exter_lambda}-{idx}"
                 else:
                     raise ValueError(f"Invalid test type: {self.test_type}")
             else:
@@ -98,7 +101,7 @@ class SGDTrainer:
 
             wandb.run.save()
             self.out_dir = os.path.join(
-                 'supervised/cifar_' + self.project_name, 
+                 'saved_models/' + self.project_name, 
                 wandb.run.name)
             if not os.path.exists(self.out_dir):
                 os.makedirs(self.out_dir)
@@ -375,9 +378,12 @@ class SGDTrainer:
             else:
                 test_acc = self.test(step, epoch)
 
-    def final_acc(self):
+    def final_acc(self, path=None):
         load_real_test(self, self.args.dataset)
-        best_mod = torch.load(os.path.join(self.out_dir, f'checkpoint_best.pth'))
+        if path is None:
+            best_mod = torch.load(os.path.join(self.out_dir, f'checkpoint_best.pth'))
+        else:
+            best_mod = torch.load(path)
         self.net.load_state_dict(
             best_mod['main_network']
         )
@@ -391,8 +397,6 @@ class SGDTrainer:
                 inputs, targets = self.prep_inputs(inputs, targets)
                 outputs = self.net(inputs)
                 loss = self.criterion(outputs, targets)
-                if self.args.mult:
-                    loss = loss.mean()
 
                 batch_loss = loss.item()
                 avg_test_loss += batch_loss
@@ -412,14 +416,3 @@ def set_seeds(seed):
     torch.cuda.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
-
-if __name__=='__main__':
-    input_args = parser.parse_args()
-    set_seeds(input_args.seed)
-    input_args.log_steps = [int(x) for x in input_args.log_steps.split(",")]
-
-    trainer_obj = SGDTrainer(input_args=input_args)
-    trainer_obj.train(
-        num_epochs=int(10e6),
-    )
-    trainer_obj.final_acc()
