@@ -381,7 +381,7 @@ class SGDTrainer:
     def final_acc(self, path=None):
         load_real_test(self, self.args.dataset)
         if path is None:
-            best_mod = torch.load(os.path.join(self.out_dir, f'checkpoint_best.pth'))
+            raise ValueError(f"Invalid path: {path}")
         else:
             best_mod = torch.load(path)
         self.net.load_state_dict(
