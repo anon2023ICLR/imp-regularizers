@@ -95,8 +95,8 @@ Our models achieves the following test accuracies for various regularization pen
 **Sample Micro-batch Experiments**
 | Model/Dataset   | SB SGD (η=0.15) | SB SGD (η=0.01) | LB SGD (η=0.01) | LB + GN (mb size = 50) | LB + GN (mb size = 100) | LB + GN (mb size = 1000) | LB + GN (mb size = 2500) |
 |----------------------|---------------------|---------------------|---------------------|----------------------------|------------------------------|-------------------------------|-------------------------------|
-| VGG-11/CIFAR10 | 78.19          | 75.94          | 73.90          | 77.34               | 77.23                | 75.73                 | 75.64                 |
-| VGG-11/CIFAR10 | 77.56          | 74.73          | 73.60          | 76.57               | 76.60                | 75.48                 | 75.36                 |
+| VGG-11/CIFAR10 (best) | 78.19          | 75.94          | 73.90          | 77.34               | 77.23                | 75.73                 | 75.64                 |
+| VGG-11/CIFAR10 (final) | 77.56          | 74.73          | 73.60          | 76.57               | 76.60                | 75.48                 | 75.36                 |
 
 **Grafting Experiments**
 | Model/Dataset      | SB SGD | LB SGD | Iterative Grafting | External Grafting | NGD       | 
