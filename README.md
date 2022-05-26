@@ -26,7 +26,7 @@ Note: for `ExterGraft`, external gradient norm data is needed to run this experi
 
 All hyperparameters are set via the `--learning-rate, --micro-batch-size, --batch-size` and `--exter-lambda` (which controls the regularization strength) arguments. 
 
-In order to recreate the experiments, the optimal learning rate (η) and lambda values (λ) are listed in the tables below:
+In order to recreate the experiments, the learning rate (η) and lambda values (λ) are listed in the tables below:
 
 **Main Regularization Experiments**
 | Model/Dataset      | SB SGD | LB SGD | LB + GN       | LB + FT       | LB + AJ        | LB + UJ        |
@@ -40,13 +40,13 @@ In order to recreate the experiments, the optimal learning rate (η) and lambda 
 |--------------------|------------|------------------|-----------------------------|
 | ResNet-18/CIFAR10  | LB + GN (mb size=2560)    | 0.5  | 0.0025  |
 | ResNet-18/CIFAR100 | LB + FT (mb size=2560)    | 0.1  | 0.01  |
-| VGG-11/CIFAR10     | LB + GN (mb size=1000)    | N/A | N/A |
-| VGG-11/CIFAR10     | LB + GN (mb size=2500)    | N/A | N/A |
+| VGG-11/CIFAR10     | LB + GN (mb size=1000)    | 0.01 | 0.25 |
+| VGG-11/CIFAR10     | LB + GN (mb size=2500)    | 0.01 | 0.25 |
 
 **Sample Micro-batch Experiments**
 | Model/Dataset      | SB SGD | LB + GN (mb size = 50) | LB + GN (mb size = 100) | LB + GN (mb size = 1000) | LB + GN (mb size = 2500) | 
 |--------------------|--------|--------|--------------------|-------------------|-----------|
-| VGG-11/CIFAR10     | η=0.01 | η=?, λ=0.25  | η=?, λ=0.5    | η=?, λ=0.5      | η=?, λ=0.5 |
+| VGG-11/CIFAR10     | η=0.01 | η=0.01, λ=0.25  | η=0.01, λ=0.5    | η=0.01, λ=0.5      | η=0.01, λ=0.5 |
 
 
 **Grafting Experiments**
@@ -93,9 +93,10 @@ Our models achieves the following test accuracies for various regularization pen
 | VGG-11/CIFAR10     | LB + GN (mb size=2500)    | 75.21 |
 
 **Sample Micro-batch Experiments**
-| Model/Dataset      | SB SGD | LB + GN (mb size = 50) | LB + GN (mb size = 100) | LB + GN (mb size = 1000) | LB + GN (mb size = 2500) | 
-|--------------------|--------|--------|--------------------|-------------------|-----------|
-| VGG-11/CIFAR10     | 74.75 | 76.5  | 76.5    | 75.5 | 75.4 |
+| Model/Dataset   | SB SGD (η=0.15) | SB SGD (η=0.01) | LB SGD (η=0.01) | LB + GN (mb size = 50) | LB + GN (mb size = 100) | LB + GN (mb size = 1000) | LB + GN (mb size = 2500) |
+|----------------------|---------------------|---------------------|---------------------|----------------------------|------------------------------|-------------------------------|-------------------------------|
+| VGG-11/CIFAR10 | 78.19          | 75.94          | 73.90          | 77.34               | 77.23                | 75.73                 | 75.64                 |
+| VGG-11/CIFAR10 | 77.56          | 74.73          | 73.60          | 76.57               | 76.60                | 75.48                 | 75.36                 |
 
 **Grafting Experiments**
 | Model/Dataset      | SB SGD | LB SGD | Iterative Grafting | External Grafting | NGD       | 
