@@ -17,7 +17,8 @@ All the regularization experiments are run via `train.py` through the following:
 * `FishLoss` - Large-batch SGD + average microbatch Fisher trace regularization
 * `AvgJacLoss` - Large-batch SGD + average Jacobian regularization
 * `UnitJacLoss` - Large-batch SGD + Unit Jacobian regularization
-​
+
+
 All hyperparameters are set via the `--learning-rate, --micro-batch-size, --batch-size` and `--exter-lambda` (which controls the regularization strength) arguments. In order to recreate the experiments, the optimal learning rate (η) and lambda values (λ) are listed in the table below:
 
 
