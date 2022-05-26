@@ -33,13 +33,27 @@ In order to recreate the experiments, the optimal learning rate (η) and lambda 
 | ResNet-18/CIFAR100 | η=0.1  | η=0.5  | η=0.1, λ=0.01 | η=0.1, λ=0.01 | η=0.1, λ=5e-5  | η=0.1, λ=0.001 |
 | VGG-11/CIFAR10     | η=0.15 | η=0.01 | η=0.01, λ=0.5 | η=0.01, λ=0.5 | η=0.01, λ=2e-5 | N/A            |
 
+**Large Micro-batch Experiments** (note: this table is pivoted from the others for ease of reading)
+| Model/Dataset      | Experiment | Learning Rate (η)| Regularization Strength (λ) |
+|--------------------|------------|------------------|-----------------------------|
+| ResNet-18/CIFAR10  | LB + GN (mb size=2560)    | 0.5  | 0.0025  |
+| ResNet-18/CIFAR100 | LB + FT (mb size=2560)    | 0.1  | 0.01  |
+| VGG-11/CIFAR10     | LB + GN (mb size=1000)    | N/A | N/A |
+| VGG-11/CIFAR10     | LB + GN (mb size=2500)    | N/A | N/A |
+
+**Sample Micro-batch Experiments**
+| Model/Dataset      | SB SGD | LB + GN (mb size = 50) | LB + GN (mb size = 100) | LB + GN (mb size = 1000) | LB + GN (mb size = 2500) | 
+|--------------------|--------|--------|--------------------|-------------------|-----------|
+| VGG-11/CIFAR10     | η=0.01 | η=?, λ=0.25  | η=?, λ=0.5    | η=?, λ=0.5      | η=?, λ=0.5 |
+
+
 **Grafting Experiments**
 | Model/Dataset      | SB SGD | LB SGD | Iterative Grafting | External Grafting | NGD       | 
 |--------------------|--------|--------|--------------------|-------------------|-----------|
 | ResNet-18/CIFAR10  | η=0.1  | η=0.1  | η=0.1              | η=0.1             | η=0.2626  |
 | ResNet-18/CIFAR100 | η=0.1  | η=0.5  | η=0.1              | η=0.1             | η=0.3951  |
-| VGG-16/CIFAR10     | η=0.15 | η=0.01 | η=0.01             | η=0.01            | η=0.01    |
-| VGG-16/CIFAR100    | η=0.15 | η=0.01 | η=0.01             | η=0.01            | η=0.01    |
+| VGG-16/CIFAR10     | η=0.05 | η=0.1  | η=0.05             | η=0.05            | η=0.2388  |
+| VGG-16/CIFAR100    | η=0.1  | η=0.1  | η=0.1              | η=0.1             | η=0.4322  |
 
 
 For example, running the following command trains a Resnet-18 on CIFAR-10 with average micro-batch gradient norm regularization (where batch size is 5120, learning rate is 0.1, regularization penalty is 0.01, and micro-batch size is 128)
