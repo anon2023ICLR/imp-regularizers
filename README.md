@@ -17,16 +17,29 @@ All the regularization experiments are run via `train.py` through the following:
 * `FishLoss` - Large-batch SGD + average microbatch Fisher trace regularization
 * `AvgJacLoss` - Large-batch SGD + average Jacobian regularization
 * `UnitJacLoss` - Large-batch SGD + Unit Jacobian regularization
+* `IterGraft` - Large-batch SGD w/Iterative Grafting
+* `ExterGraft` - Large-batch SGD w/External Grafting (requires existing run of gradient norm data)
+* `NGD` - Normalized Large-batch SGD
 
 
-All hyperparameters are set via the `--learning-rate, --micro-batch-size, --batch-size` and `--exter-lambda` (which controls the regularization strength) arguments. In order to recreate the experiments, the optimal learning rate (η) and lambda values (λ) are listed in the table below:
+All hyperparameters are set via the `--learning-rate, --micro-batch-size, --batch-size` and `--exter-lambda` (which controls the regularization strength) arguments. 
 
+In order to recreate the experiments, the optimal learning rate (η) and lambda values (λ) are listed in the tables below:
 
+**Main Regularization Experiments**
 | Model/Dataset      | SB SGD | LB SGD | LB + GN       | LB + FT       | LB + AJ        | LB + UJ        |
 |--------------------|--------|--------|---------------|---------------|----------------|----------------|
 | ResNet-18/CIFAR10  | η=0.1  | η=0.1  | η=0.1, λ=0.01 | η=0.1, λ=0.01 | η=0.1, λ=0.001 | η=0.1, λ=0.001 |
 | ResNet-18/CIFAR100 | η=0.1  | η=0.5  | η=0.1, λ=0.01 | η=0.1, λ=0.01 | η=0.1, λ=5e-5  | η=0.1, λ=0.001 |
 | VGG-11/CIFAR10     | η=0.15 | η=0.01 | η=0.01, λ=0.5 | η=0.01, λ=0.5 | η=0.01, λ=2e-5 | N/A            |
+
+**Grafting Experiments**
+| Model/Dataset      | SB SGD | LB SGD | Iterative Grafting | External Grafting | NGD       | 
+|--------------------|--------|--------|--------------------|-------------------|-----------|
+| ResNet-18/CIFAR10  | η=0.1  | η=0.1  | η=0.1              | η=0.1             | η=0.2626  |
+| ResNet-18/CIFAR100 | η=0.1  | η=0.5  | η=0.1              | η=0.1             | η=0.3951  |
+| VGG-16/CIFAR10     | η=0.15 | η=0.01 | η=0.01             | η=0.01            | η=0.01    |
+| VGG-16/CIFAR100    | η=0.15 | η=0.01 | η=0.01             | η=0.01            | η=0.01    |
 
 
 For example, running the following command trains a Resnet-18 on CIFAR-10 with average micro-batch gradient norm regularization (where batch size is 5120, learning rate is 0.1, regularization penalty is 0.01, and micro-batch size is 128)
