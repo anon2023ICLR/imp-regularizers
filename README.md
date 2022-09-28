@@ -1,5 +1,5 @@
 # Disentangling the Mechanisms Behind Implicit Regularization in SGD
-Official code for NeurIPS 2022 Submission: Disentangling the Mechanisms Behind Implicit Regularization in SGD
+Official code for ICLR 2023 Submission: Disentangling the Mechanisms Behind Implicit Regularization in SGD
 ​
 ## Requirements
 To install requirements:
